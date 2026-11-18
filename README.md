@@ -64,6 +64,15 @@ While paused, both paid tools pay nothing and make no request, in every app that
 
 The dashboard listens only on `127.0.0.1` at a random port, loads nothing from other sites, and accepts pause and resume only from its own page. It stops when you press Ctrl+C.
 
+## Install in Claude Code
+
+```bash
+claude plugin marketplace add Har50/ngtchain-mcp
+claude plugin install ngtchain@ngtchain
+```
+
+Claude Code asks for the agent wallet private key and stores it as a secret setting; use a dedicated wallet holding only what you plan to spend.
+
 ## Setup
 
 ```bash

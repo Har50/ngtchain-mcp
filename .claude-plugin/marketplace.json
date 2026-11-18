@@ -1,0 +1,1 @@
+{"name":"ngtchain","description":"NGT Chain plugin for Claude Code. Each call spends real NGT from a wallet you fund.","owner":{"name":"Plavena (proprietorship of Harsh Dhillon)","email":"support@ngtchain.com"},"plugins":[{"name":"ngtchain","source":"./ngtchain","description":"Pay x402 APIs in NGT on Base within a per-call cap and a session budget. Claude Code only."}]}
