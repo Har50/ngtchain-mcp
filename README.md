@@ -71,7 +71,13 @@ claude plugin marketplace add Har50/ngtchain-mcp
 claude plugin install ngtchain@ngtchain
 ```
 
-Claude Code asks for the agent wallet private key and stores it as a secret setting; use a dedicated wallet holding only what you plan to spend.
+Then set the agent wallet private key:
+
+```
+/plugin configure ngtchain@ngtchain
+```
+
+Claude Code stores it as a secret setting. Use a dedicated wallet holding only what you plan to spend. Until the key is set, the paid tools can't pay.
 
 ## Setup
 
