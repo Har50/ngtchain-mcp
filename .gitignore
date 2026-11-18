@@ -1,0 +1,7 @@
+dist/
+node_modules/
+dist-mcpb/
+mcp-publisher.exe
+mcp-publisher.tar.gz
+mcp-publisher
+

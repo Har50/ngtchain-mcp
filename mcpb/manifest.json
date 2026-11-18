@@ -1,0 +1,130 @@
+{
+  "manifest_version": "0.3",
+  "name": "ngtchain",
+  "display_name": "NGT Chain",
+  "version": "1.7.1",
+  "description": "Each call spends real NGT or USDC from a wallet you fund, within user-defined per-call caps and session budgets. Handles HTTP 402 paywalled endpoints and streaming data natively on Base L2.",
+  "long_description": "Each call spends real NGT or USDC from a wallet you fund, within the per-call cap and session budget you set. pay_and_fetch calls an API behind an NGT x402 paywall and pays only at or under your cap. fetch_ngt_stream is a real payment of 0.001 NGT, not a test. USDC on Base stays off unless you set its own cap and budget. The key signs on this computer. The seller pays the gas. Use a dedicated wallet that holds only what you plan to spend. The money protection is max_price and session_budget. destructiveHint is only a hint.",
+  "author": {
+    "name": "Plavena (proprietorship of Harsh Dhillon)",
+    "url": "https://ngtchain.com"
+  },
+  "homepage": "https://ngtchain.com",
+  "support": "mailto:support@ngtchain.com",
+  "documentation": "https://ngtchain.com/docs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Har50/ngtchain-mcp"
+  },
+  "privacy_policies": [
+    "https://ngtchain.com/privacy-mcp.html"
+  ],
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": [
+    "x402",
+    "base",
+    "eip-3009",
+    "agent-payments",
+    "ngt"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
+      "env": {
+        "NGT_AGENT_PRIVATE_KEY": "${user_config.agent_private_key}",
+        "NGT_MAX_PRICE": "${user_config.max_price}",
+        "NGT_SESSION_BUDGET": "${user_config.session_budget}",
+        "NGT_HOST_HEADERS": "${user_config.host_headers}",
+        "NGT_USDC_MAX_PRICE": "${user_config.usdc_max_price}",
+        "NGT_USDC_SESSION_BUDGET": "${user_config.usdc_session_budget}",
+        "NGT_PREFERRED_CURRENCY": "${user_config.preferred_currency}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "pay_and_fetch",
+      "description": "Call an NGT-paywalled API. Pays real NGT or USDC at or under the cap."
+    },
+    {
+      "name": "fetch_ngt_stream",
+      "description": "One NGT stream call. A real payment of 0.001 NGT, not a test."
+    },
+    {
+      "name": "ngt_wallet_status",
+      "description": "Agent wallet address, balances, caps and budget left. Spends nothing."
+    },
+    {
+      "name": "fund_agent_wallet",
+      "description": "Opens a browser page asking your own wallet to send NGT to the agent."
+    }
+  ],
+  "user_config": {
+    "agent_private_key": {
+      "type": "string",
+      "title": "Agent wallet private key",
+      "description": "Private key of a dedicated wallet holding NGT on Base. It stays in the extension settings on this computer and only signs payments within your caps.",
+      "sensitive": true,
+      "required": true
+    },
+    "max_price": {
+      "type": "string",
+      "title": "Max price per call (NGT)",
+      "description": "The most one call may pay in NGT. This cap is what stops a larger payment.",
+      "default": "0.01",
+      "required": false
+    },
+    "session_budget": {
+      "type": "string",
+      "title": "Session budget (NGT)",
+      "description": "The most this server process may spend in NGT. This budget is what stops further payments.",
+      "default": "0.1",
+      "required": false
+    },
+    "host_headers": {
+      "type": "string",
+      "title": "API key headers per host (optional)",
+      "description": "Only for paid APIs that also need a key. JSON, for example {\"api.example.com\":{\"x-api-key\":\"...\"}}. Each header is sent only to its host, never across a redirect, and the model never sees it. Leave empty otherwise.",
+      "sensitive": true,
+      "default": "",
+      "required": false
+    },
+    "usdc_max_price": {
+      "type": "string",
+      "title": "Max price per call (USDC, optional)",
+      "description": "The most one call may pay in USDC on Base. 0 keeps USDC off. USDC is paid only when this and the USDC session budget are both above 0.",
+      "default": "0",
+      "required": false
+    },
+    "usdc_session_budget": {
+      "type": "string",
+      "title": "Session budget (USDC, optional)",
+      "description": "The most this server process may spend in USDC. Kept separate from the NGT budget. 0 keeps USDC off.",
+      "default": "0",
+      "required": false
+    },
+    "preferred_currency": {
+      "type": "string",
+      "title": "Token to pay when a seller takes both",
+      "description": "NGT or USDC. Only matters when USDC is on.",
+      "default": "NGT",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  }
+}

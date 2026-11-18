@@ -1,0 +1,96 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Har50/ngtchain",
+  "title": "NextGen Token",
+  "description": "Each call spends real NGT or USDC from a wallet you fund, within caps and a session budget.",
+  "websiteUrl": "https://ngtchain.com",
+  "repository": {
+    "url": "https://github.com/Har50/ngtchain-mcp",
+    "source": "github"
+  },
+  "version": "1.7.1",
+  "icons": [
+    {
+      "src": "https://ngtchain.com/ngt-icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "32x32"
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@ngtchain/mcp",
+      "version": "1.7.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "NGT_AGENT_PRIVATE_KEY",
+          "description": "Wallet key that signs NGT payments. Use a dedicated wallet.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "NGT_MAX_PRICE",
+          "description": "Most one call may pay, in NGT. Default 0.01.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_SESSION_BUDGET",
+          "description": "Most pay_and_fetch may spend per server session, in NGT. Default 0.1.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_USDC_MAX_PRICE",
+          "description": "Most one call may pay, in USDC on Base. Default 0, which keeps USDC off.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_USDC_SESSION_BUDGET",
+          "description": "Most pay_and_fetch may spend per server session, in USDC, separate from the NGT budget. Default 0, which keeps USDC off.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_PREFERRED_CURRENCY",
+          "description": "Token to pay when a seller takes both NGT and USDC: NGT or USDC. Default NGT.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_MAX_FUNDING",
+          "description": "Most one fund_agent_wallet request may ask the user's browser wallet to send, in NGT. Default 10.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "NGT_HOST_HEADERS",
+          "description": "Headers sent to one host only, as JSON, e.g. {\"api.example.com\":{\"x-api-key\":\"...\"}}. The model never sees them.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "NGT_HOME",
+          "description": "Folder for the local activity log and the pause flag. Default ~/.ngtchain.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

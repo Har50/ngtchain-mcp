@@ -1,0 +1,60 @@
+{
+  "name": "@ngtchain/client",
+  "version": "1.5.2",
+  "description": "Client for one x402 v2 EIP-3009 stream call on NGT Chain. The caller signs locally. The facilitator pays Base gas.",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('dist/cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}\\n')\"",
+    "test": "npm run build && node --test test/client.test.mjs"
+  },
+  "keywords": [
+    "ngt",
+    "x402",
+    "base",
+    "usdc",
+    "eip3009",
+    "agentic-payments",
+    "ai-agents",
+    "ai-agent"
+  ],
+  "homepage": "https://ngtchain.com",
+  "bugs": {
+    "url": "https://github.com/Har50/ngtchain-mcp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Har50/ngtchain-mcp.git",
+    "directory": "client"
+  },
+  "author": "Plavena (proprietorship of Harsh Dhillon)",
+  "license": "MIT",
+  "peerDependencies": {
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.0",
+    "viem": "^2.38.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

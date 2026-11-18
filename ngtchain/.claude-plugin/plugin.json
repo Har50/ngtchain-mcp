@@ -1,0 +1,35 @@
+{
+  "name": "ngtchain",
+  "displayName": "NGT Chain",
+  "version": "1.7.1",
+  "description": "Each call spends real NGT or USDC from a wallet you fund, within per-call caps and a session budget you set. Claude Code only.",
+  "author": {
+    "name": "Plavena (proprietorship of Harsh Dhillon)",
+    "email": "support@ngtchain.com",
+    "url": "https://ngtchain.com"
+  },
+  "license": "MIT",
+  "homepage": "https://ngtchain.com",
+  "repository": "https://github.com/Har50/ngtchain-mcp",
+  "userConfig": {
+    "agent_private_key": {
+      "type": "string",
+      "title": "Agent wallet private key",
+      "description": "Private key of a dedicated wallet you fund with NGT or USDC on Base. Claude Code stores it as a secret on this computer. It is not read from an existing environment variable.",
+      "sensitive": true,
+      "required": true
+    },
+    "max_price": {
+      "type": "string",
+      "title": "Max price per call (NGT)",
+      "description": "The most one call may pay in NGT. This cap is what stops a larger payment.",
+      "default": "0.01"
+    },
+    "session_budget": {
+      "type": "string",
+      "title": "Session budget (NGT)",
+      "description": "The most this server process may spend in NGT. This budget is what stops further payments.",
+      "default": "0.1"
+    }
+  }
+}

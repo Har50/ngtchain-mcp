@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NGT Chain MCP privacy</title>
+</head>
+<body>
+  <h1>NGT Chain MCP privacy</h1>
+  <p>This page is only about the NGT Chain MCP server (<code>@ngtchain/mcp</code>) and the Claude Code plugin in this repository. It is not the privacy policy for the NGT Chain website or for any paid API you choose to call.</p>
+  <p>The operator is Plavena (proprietorship of Harsh Dhillon).</p>
+
+  <h2>Agent key</h2>
+  <p>The agent wallet private key is a setting on this computer. In Claude Code it is a sensitive plugin setting. In the desktop extension it is a setting of that extension. It stays on this computer. The server uses it on this computer to sign payments. It is not sent to NGT Chain, to a paid API, or to the local dashboard. The Claude Code plugin does not read the key from an existing environment variable.</p>
+
+  <h2>What it contacts</h2>
+  <ul>
+    <li><strong>The paid API.</strong> <code>pay_and_fetch</code> calls the HTTPS address you ask for. <code>fetch_ngt_stream</code> calls <code>https://www.ngtchain.com/v1/agent/stream</code>.</li>
+    <li><strong>A Base RPC.</strong> The server reads the agent wallet's NGT and USDC balances from Base. With no custom RPC set, that is the public Base mainnet RPC.</li>
+    <li><strong>The local dashboard.</strong> <code>npx @ngtchain/mcp dashboard</code> serves a page on <code>127.0.0.1</code> on this computer only. It is not reachable from other machines. The funding page opened by <code>fund_agent_wallet</code> is also only on this computer.</li>
+  </ul>
+
+  <h2>Payments</h2>
+  <p>A payment is a transfer of NGT or USDC on Base. The agent wallet address, the amount, and the recipient are public on Base. The server does not hide them.</p>
+  <p>Each call spends real NGT or USDC from a wallet you fund. <code>fetch_ngt_stream</code> is a real payment of 0.001 NGT, not a test. USDC stays off until you set a USDC per-call cap and a USDC session budget. The money protection is the per-call cap (<code>max_price</code>) and the session budget (<code>session_budget</code>). A destructive hint on a tool is only a hint. The server does not show a spend-confirmation dialog.</p>
+
+  <h2>Analytics</h2>
+  <p>The server has no analytics. It does not send usage data to NGT Chain.</p>
+  <p>A log on this computer (<code>~/.ngtchain/activity.jsonl</code>) records the time, host, outcome, amount, and Base transaction of a call. It does not record the agent key, request headers, query strings, or response bodies.</p>
+</body>
+</html>
