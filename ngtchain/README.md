@@ -1,4 +1,6 @@
-NGT Chain is a local MCP server for Claude Code. Each call spends real NGT or USDC from a wallet you fund. pay_and_fetch sends the HTTPS request you name to that paid API and pays the price it asks, in NGT or USDC, only at or under your per-call cap. fetch_ngt_stream sends one request to the NGT stream and spends 0.001 NGT. The server also reads NGT and USDC balances from a Base RPC, and it can open a funding page on 127.0.0.1 that only this computer can reach. Payments are public on Base. The server does not send analytics.
+NGT Chain is a local MCP server for Claude Code. The server can spend NGT from a wallet you fund. USDC stays off in this plugin because it has no USDC cap settings. pay_and_fetch sends the HTTPS request you name to that paid API and pays the price it asks in NGT, only at or under your per-call cap. fetch_ngt_stream sends one request to the NGT stream and spends 0.001 NGT. The server also reads NGT and USDC balances from a Base RPC, and it can open a funding page on 127.0.0.1 that only this computer can reach. Payments are public on Base. The server does not send analytics.
+
+Privacy: https://www.ngtchain.com/ngtchain-mcp-privacy.html
 
 The money protection is max_price and session_budget. A destructiveHint on a tool is only a hint. This plugin does not show a spend-confirmation dialog.
 

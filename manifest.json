@@ -11,7 +11,7 @@
   },
   "homepage": "https://ngtchain.com",
   "support": "mailto:support@ngtchain.com",
-  "documentation": "https://ngtchain.com/docs",
+  "documentation": "https://github.com/Har50/ngtchain-mcp#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/Har50/ngtchain-mcp"
