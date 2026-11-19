@@ -1,6 +1,6 @@
 {
   "name": "@ngtchain/mcp",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Each call spends real NGT or USDC from a wallet you fund, within per-call caps and a session budget you set.",
   "mcpName": "io.github.Har50/ngtchain",
   "type": "module",
