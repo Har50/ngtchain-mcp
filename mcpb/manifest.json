@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "ngtchain",
   "display_name": "NGT Chain",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Each call spends real NGT or USDC from a wallet you fund, within user-defined per-call caps and session budgets. Handles HTTP 402 paywalled endpoints and streaming data natively on Base L2.",
   "long_description": "Each call spends real NGT or USDC from a wallet you fund, within the per-call cap and session budget you set. pay_and_fetch calls an API behind an NGT x402 paywall and pays only at or under your cap. fetch_ngt_stream is a real payment of 0.001 NGT, not a test. USDC on Base stays off unless you set its own cap and budget. The key signs on this computer. The seller pays the gas. Use a dedicated wallet that holds only what you plan to spend. The money protection is max_price and session_budget. destructiveHint is only a hint.",
   "author": {
