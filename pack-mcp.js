@@ -35,8 +35,8 @@ try {
   fs.copyFileSync(iconSource, path.join(buildDir, "icon.png"));
   console.log("Copied icon.png from " + iconSource);
 
-  // Runtime deps only: no typescript / @types. Resolve @ngtchain/client from npm
-  // (file:./client is for local monorepo-style builds of this public repo).
+  // Runtime deps only: no typescript / @types. Pin @ngtchain/client to the
+  // exact version in client/package.json for the desktop bundle.
   const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8"));
   const clientPkg = JSON.parse(fs.readFileSync(path.join(__dirname, "client", "package.json"), "utf8"));
   const bundlePkg = {
