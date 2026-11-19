@@ -1,11 +1,8 @@
 dist/
 node_modules/
 dist-mcpb/
+*.mcpb
 mcp-publisher.exe
 mcp-publisher.tar.gz
 mcp-publisher
-
-
-*.mcpb
-dist-mcpb/
 
