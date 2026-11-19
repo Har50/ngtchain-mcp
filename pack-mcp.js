@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const VERSION = "1.7.2";
+const VERSION = "1.7.3";
 
 console.log(`Building NGT Chain MCP v${VERSION}...`);
 
@@ -83,15 +83,9 @@ try {
   if (fs.existsSync(outputPath)) fs.rmSync(outputPath);
 
   console.log("Packaging into " + outputFileName + "...");
-  // Prefer tar's zip writer (handles large node_modules); fall back to zip(1).
-  const zipPath = outputPath + ".zip";
-  if (fs.existsSync(zipPath)) fs.rmSync(zipPath);
-  try {
-    execSync(`tar -a -c -f "${zipPath}" -C "${buildDir}" .`, { stdio: "inherit" });
-  } catch {
-    execSync(`cd "${buildDir}" && zip -r "${zipPath}" .`, { stdio: "inherit" });
-  }
-  fs.renameSync(zipPath, outputPath);
+  // Use the official packer. tar/zip write "./" and directory entries that
+  // `mcpb unpack` (and so Claude Desktop install) fails on with EISDIR/ENOENT.
+  execSync(`npx -y @anthropic-ai/mcpb@2.1.2 pack "${buildDir}" "${outputPath}"`, { stdio: "inherit" });
 
   console.log("Bundle created at: " + outputPath);
 } catch (error) {
