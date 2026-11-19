@@ -4,8 +4,9 @@ import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const VERSION = "1.7.2";
 
-console.log("Building NGT Chain MCP v1.7.2...");
+console.log(`Building NGT Chain MCP v${VERSION}...`);
 
 try {
   console.log("Compiling TypeScript...");
@@ -25,30 +26,72 @@ try {
     path.join(__dirname, "icon.png"),
     path.join(__dirname, "mcpb", "icon.png"),
     process.env.ICON_PATH,
-    "C:\\Users\\Harsh\\Desktop\\newnet\\ngtchain-icon\\icon.png",
   ].filter(Boolean);
-
   const iconSource = iconCandidates.find((candidate) => fs.existsSync(candidate));
   if (!iconSource) {
-    console.error("icon.png was not found next to the package, in mcpb/, ICON_PATH, or the Desktop ngtchain-icon folder.");
+    console.error("icon.png was not found next to the package, in mcpb/, or ICON_PATH.");
     process.exit(1);
   }
   fs.copyFileSync(iconSource, path.join(buildDir, "icon.png"));
   console.log("Copied icon.png from " + iconSource);
 
-  const outputFileName = "ngtchain-1.7.2.mcpb";
+  // Runtime deps only: no typescript / @types. Resolve @ngtchain/client from npm
+  // (file:./client is for local monorepo-style builds of this public repo).
+  const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8"));
+  const clientPkg = JSON.parse(fs.readFileSync(path.join(__dirname, "client", "package.json"), "utf8"));
+  const bundlePkg = {
+    name: pkg.name,
+    version: pkg.version,
+    type: pkg.type,
+    main: pkg.main,
+    bin: pkg.bin,
+    engines: pkg.engines,
+    dependencies: {
+      ...pkg.dependencies,
+      "@ngtchain/client": clientPkg.version,
+    },
+  };
+  delete bundlePkg.dependencies["@types/node"];
+  fs.writeFileSync(path.join(buildDir, "package.json"), JSON.stringify(bundlePkg, null, 2) + "\n");
+
+  console.log("Installing production dependencies (omit=dev, omit=peer)...");
+  execSync("npm install --omit=dev --omit=peer --ignore-scripts", {
+    cwd: buildDir,
+    stdio: "inherit",
+  });
+
+  // Refuse package-own secrets/tests only (deps may ship their own test/ folders).
+  const banned = [];
+  for (const name of fs.readdirSync(buildDir)) {
+    if (name === "node_modules" || name === "dist") continue;
+    if (/^\.env($|\.)/i.test(name) || /^wallet\.json$/i.test(name) || /\.(pem|key)$/i.test(name)) {
+      banned.push(name);
+    }
+    if (name === "test" || name === "tests") banned.push(name);
+  }
+  if (banned.length) {
+    console.error("Refusing to pack secrets or package test files:\n" + banned.join("\n"));
+    process.exit(1);
+  }
+  if (fs.existsSync(path.join(buildDir, "node_modules", "typescript"))) {
+    console.error("typescript was installed; refuse packing peer/dev bloat.");
+    process.exit(1);
+  }
+
+  const outputFileName = `ngtchain-${VERSION}.mcpb`;
   const outputPath = path.join(__dirname, outputFileName);
   if (fs.existsSync(outputPath)) fs.rmSync(outputPath);
 
   console.log("Packaging into " + outputFileName + "...");
-  if (process.platform === "win32") {
-    execSync(
-      'powershell Compress-Archive -Path "' + buildDir + '\\*" -DestinationPath "' + outputPath + '" -Force',
-      { stdio: "inherit" }
-    );
-  } else {
-    execSync('cd "' + buildDir + '" && zip -r "' + outputPath + '" .', { stdio: "inherit" });
+  // Prefer tar's zip writer (handles large node_modules); fall back to zip(1).
+  const zipPath = outputPath + ".zip";
+  if (fs.existsSync(zipPath)) fs.rmSync(zipPath);
+  try {
+    execSync(`tar -a -c -f "${zipPath}" -C "${buildDir}" .`, { stdio: "inherit" });
+  } catch {
+    execSync(`cd "${buildDir}" && zip -r "${zipPath}" .`, { stdio: "inherit" });
   }
+  fs.renameSync(zipPath, outputPath);
 
   console.log("Bundle created at: " + outputPath);
 } catch (error) {

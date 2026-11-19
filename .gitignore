@@ -5,3 +5,7 @@ mcp-publisher.exe
 mcp-publisher.tar.gz
 mcp-publisher
 
+
+*.mcpb
+dist-mcpb/
+
