@@ -2,7 +2,7 @@
   "mcpServers": {
     "ngtchain": {
       "command": "npx",
-      "args": ["-y", "@ngtchain/mcp@1.7.1"],
+      "args": ["-y", "@ngtchain/mcp@1.7.2"],
       "env": {
         "NGT_AGENT_PRIVATE_KEY": "${user_config.agent_private_key}",
         "NGT_MAX_PRICE": "${user_config.max_price}",

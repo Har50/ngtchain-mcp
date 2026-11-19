@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "ngtchain",
   "display_name": "NGT Chain",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Each call spends real NGT or USDC from a wallet you fund, within user-defined per-call caps and session budgets. Handles HTTP 402 paywalled endpoints and streaming data natively on Base L2.",
   "long_description": "Each call spends real NGT or USDC from a wallet you fund, within the per-call cap and session budget you set. pay_and_fetch calls an API behind an NGT x402 paywall and pays only at or under your cap. fetch_ngt_stream is a real payment of 0.001 NGT, not a test. USDC on Base stays off unless you set its own cap and budget. The key signs on this computer. The seller pays the gas. Use a dedicated wallet that holds only what you plan to spend. The money protection is max_price and session_budget. destructiveHint is only a hint.",
   "author": {
@@ -50,19 +50,19 @@
   "tools": [
     {
       "name": "pay_and_fetch",
-      "description": "Call an NGT-paywalled API. Pays real NGT or USDC at or under the cap."
+      "description": "Fetch a paid URL and pay in NGT (or USDC if enabled) only within your caps."
     },
     {
       "name": "fetch_ngt_stream",
-      "description": "One NGT stream call. A real payment of 0.001 NGT, not a test."
+      "description": "One paid call for exactly 0.001 NGT. A real payment, not a test."
     },
     {
       "name": "ngt_wallet_status",
-      "description": "Agent wallet address, balances, caps and budget left. Spends nothing."
+      "description": "Check spending wallet balance, caps and budget left. Spends nothing."
     },
     {
       "name": "fund_agent_wallet",
-      "description": "Opens a browser page asking your own wallet to send NGT to the agent."
+      "description": "Open a browser page so you can send NGT to the assistant wallet."
     }
   ],
   "user_config": {

@@ -53,9 +53,9 @@ Some sellers built on `@ngtchain/paywall` 0.2.0 also take USDC on Base. USDC is 
 ## See and stop spending
 
 ```bash
-npx -y @ngtchain/mcp@1.7.1 dashboard   # local page: recent calls, totals, balances, pause button
-npx -y @ngtchain/mcp@1.7.1 pause       # stop all agent spending, in every app
-npx -y @ngtchain/mcp@1.7.1 resume      # allow it again
+npx -y @ngtchain/mcp@1.7.2 dashboard   # local page: recent calls, totals, balances, pause button
+npx -y @ngtchain/mcp@1.7.2 pause       # stop all agent spending, in every app
+npx -y @ngtchain/mcp@1.7.2 resume      # allow it again
 ```
 
 Every `pay_and_fetch` and `fetch_ngt_stream` call is recorded in `~/.ngtchain/activity.jsonl` (set `NGT_HOME` to use another folder): the time, the app, the host and path, the outcome (paid, free, refused, failed or paused), the amount and token, the seller wallet and the Base transaction. The dashboard's chart and main totals count NGT; USDC spending gets its own totals. It never records keys, header names or values, query strings, request bodies or response data. The log is capped at 1 MB; the oldest lines are dropped first.
@@ -82,7 +82,7 @@ Claude Code stores it as a secret setting. Use a dedicated wallet holding only w
 ## Setup
 
 ```bash
-npx -y @ngtchain/mcp@1.7.1 init
+npx -y @ngtchain/mcp@1.7.2 init
 ```
 
 It asks which apps to configure (Cursor, Claude Desktop, Claude Code, Gemini CLI, Codex; pick one or several, like `1,3`), then for the agent wallet: paste a key (with or without `0x`; it is not shown) or press Enter to create a new wallet. It then asks for the two limits. It adds `ngtchain` to each app's MCP config and keeps your other servers and settings, including env vars you added to an existing `ngtchain` entry. It backs up the old file to `.bak` and refuses to touch a file it cannot parse (JSON, or TOML for Codex). It prints the wallet address, never the key.
@@ -106,7 +106,7 @@ In the Claude Desktop extension, set the agent key in the extension's settings. 
   "mcpServers": {
     "ngtchain": {
       "command": "npx",
-      "args": ["-y", "@ngtchain/mcp@1.7.1"],
+      "args": ["-y", "@ngtchain/mcp@1.7.2"],
       "env": {
         "NGT_AGENT_PRIVATE_KEY": "0x...",
         "NGT_MAX_PRICE": "0.01",
@@ -117,4 +117,4 @@ In the Claude Desktop extension, set the agent key in the extension's settings. 
 }
 ```
 
-`npx -y @ngtchain/mcp@1.7.1` starts this version of the server. The source repository is [Har50/ngtchain-mcp](https://github.com/Har50/ngtchain-mcp). The homepage is [ngtchain.com](https://ngtchain.com). The registry name is `io.github.Har50/ngtchain`.
+`npx -y @ngtchain/mcp@1.7.2` starts this version of the server. The source repository is [Har50/ngtchain-mcp](https://github.com/Har50/ngtchain-mcp). The homepage is [ngtchain.com](https://ngtchain.com). The registry name is `io.github.Har50/ngtchain`.

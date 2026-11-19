@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log("Building NGT Chain MCP v1.7.1...");
+console.log("Building NGT Chain MCP v1.7.2...");
 
 try {
   console.log("Compiling TypeScript...");
@@ -36,7 +36,7 @@ try {
   fs.copyFileSync(iconSource, path.join(buildDir, "icon.png"));
   console.log("Copied icon.png from " + iconSource);
 
-  const outputFileName = "ngtchain-1.7.1.mcpb";
+  const outputFileName = "ngtchain-1.7.2.mcpb";
   const outputPath = path.join(__dirname, outputFileName);
   if (fs.existsSync(outputPath)) fs.rmSync(outputPath);
 

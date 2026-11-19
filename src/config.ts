@@ -105,7 +105,7 @@ export function serverEntry(
   return {
     ...(app === "claude-code" ? { type: "stdio" as const } : {}),
     command: viaCmd ? "cmd" : "npx",
-    args: viaCmd ? ["/c", "npx", "-y", "@ngtchain/mcp@1.7.1"] : ["-y", "@ngtchain/mcp@1.7.1"],
+    args: viaCmd ? ["/c", "npx", "-y", "@ngtchain/mcp@1.7.2"] : ["-y", "@ngtchain/mcp@1.7.2"],
     env: {
       NGT_AGENT_PRIVATE_KEY: limits.privateKey,
       NGT_MAX_PRICE: limits.maxPrice,

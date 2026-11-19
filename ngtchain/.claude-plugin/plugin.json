@@ -1,7 +1,7 @@
 {
   "name": "ngtchain",
   "displayName": "NGT Chain",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Each call spends real NGT from a wallet you fund, within a per-call cap and a session budget you set. Claude Code only.",
   "author": {
     "name": "Plavena (proprietorship of Harsh Dhillon)",

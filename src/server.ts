@@ -23,10 +23,10 @@ const USDC_ADDRESSES = Object.values(ASSETS).map((network) => network.USDC.addre
 const USDC_INSTRUCTION = `
 - The user also allows USDC on Base, with its own per-call cap and session budget. pay_and_fetch pays USDC only to sellers that take it; when a seller takes both, it pays ${usdc.preferred}${usdc.preferred === "USDC" ? ", as the user prefers" : ""}. fund_agent_wallet only sends NGT; the user adds USDC to the agent wallet themselves.`;
 
-const INSTRUCTIONS = `NGT Chain lets this agent pay APIs per call in NGT on Base (x402), within spending caps.
-- When the user wants data from a paid (HTTP 402 / x402) URL, use pay_and_fetch. The configured caps apply on their own.
+const INSTRUCTIONS = `NGT Chain lets this agent pay for APIs per call in NGT on Base, within spending caps the user set.
+- When the user wants data from a paid URL (HTTP 402 / x402), use pay_and_fetch. The configured caps apply on their own.
 - Call ngt_wallet_status before the first paid call in a conversation, and whenever the user asks about the agent wallet, its balance or its budget.
-- If no wallet is set up, tell the user to run \`npx -y @ngtchain/mcp@1.7.1 init\` in a terminal, then restart this app.
+- If no wallet is set up, tell the user to run \`npx -y @ngtchain/mcp@1.7.2 init\` in a terminal, then restart this app.
 - A 402 is the normal first step of a paid call and pay_and_fetch pays it within the caps. It is never a reason to fund the wallet.
 - If the balance is too low for what the user wants, work out what it costs (price per call times the number of calls), propose that amount, and call fund_agent_wallet only after the user agrees. The user approves the transfer in their own browser wallet.
 - When a paid call fails, follow the next step in the error message and tell the user. Do not retry in a loop.
@@ -35,7 +35,7 @@ const INSTRUCTIONS = `NGT Chain lets this agent pay APIs per call in NGT on Base
 - The user can pause all spending from their terminal or the NGT dashboard. While paused, paid tools pay nothing; tell the user and never try to work around it. Only the user can resume.
 - NGT cannot currently be bought: there is no market and no checkout. Funding only moves NGT the user already holds into the agent wallet. Never present NGT as an investment or suggest holding more than the planned usage needs.${usdc.enabled ? USDC_INSTRUCTION : ""}`;
 
-const server = new McpServer({ name: "ngtchain-mcp", version: "1.7.1" }, { instructions: INSTRUCTIONS });
+const server = new McpServer({ name: "ngtchain-mcp", version: "1.7.2" }, { instructions: INSTRUCTIONS });
 
 // Spending limits. The tool argument can lower the per-call cap, never raise it.
 const MAX_PRICE = parseUnits(process.env.NGT_MAX_PRICE ?? "0.01", 18);
@@ -64,19 +64,21 @@ const DO_NOT_RETRY = "Tell the user. Do not retry without their go-ahead.";
 /** What a failed paid call means and what the model should do next. `limit` names the cap that applied. */
 function nextStep(message: string, limit?: string, redirectsRefused = false): string {
   if (/insufficient NGT/.test(message)) {
-    return "Nothing was paid: the agent wallet holds too little NGT for this price. Call ngt_wallet_status, work out what the calls the user wants will cost, propose that amount, and call fund_agent_wallet only if the user agrees.";
+    return "Nothing was paid: the spending wallet holds too little NGT for this price. Call ngt_wallet_status, work out what the calls the user wants will cost, propose that amount, and call fund_agent_wallet only if the user agrees.";
   }
   if (/insufficient USDC/.test(message)) {
-    return "Nothing was paid: the agent wallet holds too little USDC for this price. fund_agent_wallet only sends NGT, so tell the user; they can send USDC on Base to the agent wallet themselves. Do not retry.";
+    return "Nothing was paid: the spending wallet holds too little USDC for this price. fund_agent_wallet only sends NGT, so tell the user; they can send USDC on Base to the agent wallet themselves. Do not retry.";
   }
-  if (/above the .* (NGT|USDC) cap/.test(message)) return `Nothing was paid. ${limit ?? ""} Tell the user the price and the limit. Do not retry.`;
+  if (/above the .* (NGT|USDC) cap/.test(message)) {
+      return `Nothing was paid — this stayed within your safety rules. ${limit ?? ""} Tell the user the price and the limit. Do not retry.`;
+    }
   if (redirectsRefused && /Unexpected status code: 3\d\d/.test(message)) {
     return "Nothing was paid: the API redirected, and configured headers are never sent across a redirect, so it was not followed. Tell the user the URL redirects; call the final URL only if they give it.";
   }
   if (/Unexpected status code/.test(message)) return `Nothing was paid: the API answered with an error before asking for payment. ${DO_NOT_RETRY}`;
   if (/^Refusing/.test(message)) {
     if (!usdc.enabled && USDC_ADDRESSES.some((address) => message.toLowerCase().includes(address))) {
-      return `Nothing was paid: the seller takes USDC but not NGT, and USDC is off. Tell the user; they can turn it on with NGT_USDC_MAX_PRICE and NGT_USDC_SESSION_BUDGET in the MCP config (or by running \`npx -y @ngtchain/mcp@1.7.1 init\` again) and restarting the app. ${DO_NOT_RETRY}`;
+      return `Nothing was paid: the seller takes USDC but not NGT, and USDC is off. Tell the user; they can turn it on with NGT_USDC_MAX_PRICE and NGT_USDC_SESSION_BUDGET in the MCP config (or by running \`npx -y @ngtchain/mcp@1.7.2 init\` again) and restarting the app. ${DO_NOT_RETRY}`;
     }
     const accepted = usdc.enabled ? "NGT or USDC" : "NGT";
     return `Nothing was paid: the seller asked for a payment this server does not make (only ${accepted} on Base within the caps). ${limit ? `${limit} ` : ""}${DO_NOT_RETRY}`;
@@ -87,10 +89,10 @@ function nextStep(message: string, limit?: string, redirectsRefused = false): st
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err)).replace(/\.$/, "");
 
 const NO_WALLET =
-  "No wallet set up, so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.1 init` in a terminal to set up the agent wallet (in Claude Desktop, set the agent key in the extension's settings instead), then restart this app.";
+  "No wallet set up yet for your assistant's spending account, so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.2 init` in a terminal to set up the agent wallet (in Claude Desktop, set the agent key in the extension's settings instead), then restart this app.";
 
 const BAD_KEY =
-  "The agent key in the MCP config is not a valid private key (64 hex characters, with or without 0x), so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.1 init` in a terminal to set it again, then restart this app. In Claude Desktop, fix the agent key in the extension's settings instead; pasting into that hidden field can add to the old value rather than replace it, so if in doubt, reinstall the extension and paste the key once.";
+  "The agent key in the MCP config is not a valid private key (64 hex characters, with or without 0x), so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.2 init` in a terminal to set it again, then restart this app. In Claude Desktop, fix the agent key in the extension's settings instead; pasting into that hidden field can add to the old value rather than replace it, so if in doubt, reinstall the extension and paste the key once.";
 
 const MAX_DATA_CHARS = 50_000;
 
@@ -106,7 +108,7 @@ function capData(data: unknown): { data: unknown; truncated?: string } {
 }
 
 const PAUSED =
-  "Spending is paused by the user, so nothing was paid. Tell the user; only they can resume it, with `npx -y @ngtchain/mcp@1.7.1 resume` or the dashboard (`npx -y @ngtchain/mcp@1.7.1 dashboard`). Do not retry.";
+  "Spending is paused by the user, so nothing was paid. Tell the user; only they can resume it, with `npx -y @ngtchain/mcp@1.7.2 resume` or the dashboard (`npx -y @ngtchain/mcp@1.7.2 dashboard`). Do not retry.";
 
 function agentKey(): { key: string; address: string } | { error: string } {
   const raw = process.env.NGT_AGENT_PRIVATE_KEY?.trim();
@@ -147,7 +149,7 @@ server.registerTool(
   {
     title: "Fetch NGT Stream [Paid: 0.001 NGT]",
     description:
-      "One NGT stream call on Base. Each call spends exactly 0.001 NGT. The agent signs an x402 v2 EIP-3009 authorization locally. The facilitator pays Base gas. Do not call in a loop. Set NGT_AGENT_PRIVATE_KEY in the MCP server environment.",
+      "One paid call for exactly 0.001 NGT on Base. A real payment, not a test. The spending wallet signs locally; the facilitator pays gas. Do not call in a loop. Requires NGT_AGENT_PRIVATE_KEY in the MCP server environment.",
     annotations: {
       readOnlyHint: false,
       destructiveHint: true,
@@ -188,8 +190,8 @@ server.registerTool(
   {
     title: usdc.enabled ? "Pay and Fetch [Paid: NGT or USDC, capped]" : "Pay and Fetch [Paid: NGT, capped]",
     description: usdc.enabled
-      ? `Call an API that charges per request in NGT or USDC on Base (x402). Handles the 402 itself: pays the seller's price only if it is NGT or USDC on Base and at or under the cap for that token (each token has its own cap and session budget; nothing is converted between them). When the seller takes both, it pays ${usdc.preferred}. Returns the response (JSON, or text cut to the first 50,000 characters) with the amount and token paid, the seller wallet and the Base transaction. Use when the user asks for data or an action from a paywalled URL. Headers the user configured for the URL's host (NGT_HOST_HEADERS) are added for you; you cannot set or see them. Each call spends real tokens; do not call in a loop. On failure, follow the next step in the error.`
-      : "Call an API that charges per request in NGT on Base (x402). Handles the 402 itself: pays the seller's price only if it is NGT on Base and at or under the cap, then returns the response (JSON, or text cut to the first 50,000 characters) with the amount paid, the seller wallet and the Base transaction. Use when the user asks for data or an action from an NGT-paywalled URL. Headers the user configured for the URL's host (NGT_HOST_HEADERS) are added for you; you cannot set or see them. Each call spends real NGT; do not call in a loop. On failure, follow the next step in the error.",
+      ? `Fetch a paid URL. If the site asks for payment (HTTP 402), pay automatically in NGT or USDC on Base only when the price is at or under that token's per-request cap and session budget (nothing is converted between them). When the seller takes both, it pays ${usdc.preferred}. Returns the response (JSON, or text cut to the first 50,000 characters) plus amount, token, seller wallet and Base transaction. Host headers from NGT_HOST_HEADERS are added for you; you cannot set or see them. Each call spends real tokens; do not call in a loop. On failure, follow the next step in the error.`
+      : "Fetch a paid URL. If the site asks for payment (HTTP 402), pay automatically in NGT on Base only when the price is at or under your per-request cap and session budget. Returns the response (JSON, or text cut to the first 50,000 characters) plus amount paid, seller wallet and Base transaction. Host headers from NGT_HOST_HEADERS are added for you; you cannot set or see them. Each call spends real NGT; do not call in a loop. On failure, follow the next step in the error.",
     inputSchema: {
       url: z.string().describe("The paywalled https URL."),
       max_price_ngt: z
@@ -280,8 +282,8 @@ server.registerTool(
         tool,
         url,
         usdc.enabled
-          ? "Session budgets used up, so nothing was paid. Tell the user; they can raise NGT_SESSION_BUDGET or NGT_USDC_SESSION_BUDGET in the MCP config and restart the app. Do not retry."
-          : "Session budget used up, so nothing was paid. Tell the user; they can raise NGT_SESSION_BUDGET in the MCP config and restart the app. Do not retry.",
+          ? "Session budgets used up, so nothing was paid. Tell the user the session budget is used up (it covers every chat until this app restarts the server); they can raise NGT_SESSION_BUDGET or NGT_USDC_SESSION_BUDGET in the MCP config and restart the app. Do not retry."
+          : "Session budget used up, so nothing was paid. Tell the user the session budget is used up (it covers every chat until this app restarts the server); they can raise NGT_SESSION_BUDGET in the MCP config and restart the app. Do not retry.",
         "session budget used up",
       );
     }
@@ -348,7 +350,7 @@ server.registerTool(
   {
     title: "NGT Wallet Status",
     description:
-      "Shows the agent wallet address, whether the user has paused spending, its NGT balance on Base, the per-call cap, the session budget left, and about how many calls the balance covers at the 0.001 NGT reference price. If the user turned USDC on, also its USDC balance, cap and budget left. Spends nothing. If no wallet is set up, says how to set one up.",
+      "Check the assistant's spending wallet on Base: address, whether spending is paused, NGT balance, per-request cap, session budget left, and about how many 0.001 NGT reference calls that balance covers. If USDC is on, also shows USDC balance, cap and budget left. Spends nothing. If no wallet is set up, explains how to set one up. Call this before the first paid request or a top-up.",
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
   },
   async () => {
@@ -404,7 +406,7 @@ server.registerTool(
   {
     title: "Fund Agent Wallet [opens the user's browser wallet]",
     description:
-      "Opens a local page in the user's browser that asks their browser wallet (such as MetaMask) to send NGT on Base to this agent wallet. Nothing moves unless the user confirms in their wallet; this tool never sees their keys. Only call after the user has agreed to the amount. Afterwards, call ngt_wallet_status to see whether it arrived.",
+      "Open a simple local browser page so the user can send NGT on Base from their own wallet to the assistant's spending address. Nothing moves unless they confirm; this tool never sees their personal keys. Only call after the user has agreed to the amount (capped by NGT_MAX_FUNDING). Afterwards, call ngt_wallet_status to see whether it arrived.",
     inputSchema: {
       amount_ngt: z.string().describe(`NGT to request, for example "0.1". At most ${ngt(MAX_FUNDING)}.`),
     },
