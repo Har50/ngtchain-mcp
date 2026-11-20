@@ -33,7 +33,7 @@ for (const [label, key, reason] of [
       assert.equal(result.isError, true);
       const text = result.content[0].text;
       assert.match(text, reason);
-      assert.match(text, /npx -y @ngtchain\/mcp@1.7.2 init/);
+      assert.match(text, /npx -y @ngtchain\/mcp@\d+\.\d+\.\d+ init/);
       assert.match(text, /Claude Desktop/);
       assert.match(text, /nothing was paid/);
       if (key) assert.ok(!text.includes(key.slice(2)), "the error must not echo the key");

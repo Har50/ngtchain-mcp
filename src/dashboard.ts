@@ -288,7 +288,7 @@ export function dashboardPage(nonce: string, token: string): string {
       const res = await fetch("/api/state", { headers: { "x-ngt-token": TOKEN } });
       if (res.ok) render(await res.json());
     } catch {
-      document.getElementById("note").textContent = "The dashboard server has stopped. Run npx -y @ngtchain/mcp@1.7.2 dashboard again.";
+      document.getElementById("note").textContent = "The dashboard server has stopped. Run npx -y @ngtchain/mcp@1.7.4 dashboard again.";
     }
   }
 

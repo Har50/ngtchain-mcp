@@ -10,7 +10,7 @@ for (const flag of ["--help", "-h", "help"]) {
     const run = spawnSync(process.execPath, [serverPath, flag], { encoding: "utf8", timeout: 10_000 });
     assert.equal(run.status, 0, `exit ${run.status}, signal ${run.signal}`);
     assert.match(run.stdout, /Usage:/);
-    assert.match(run.stdout, /npx -y @ngtchain\/mcp@1.7.2 init/);
+    assert.match(run.stdout, /npx -y @ngtchain\/mcp@\d+\.\d+\.\d+ init/);
     assert.match(run.stdout, /NGT_AGENT_PRIVATE_KEY/);
   });
 }

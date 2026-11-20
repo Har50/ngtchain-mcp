@@ -25,12 +25,12 @@ test("the entry uses the env names the server reads", () => {
   const entry = serverEntry("cursor", "win32", limits);
   assert.deepEqual(entry, {
     command: "npx",
-    args: ["-y", "@ngtchain/mcp@1.7.2"],
+    args: ["-y", "@ngtchain/mcp@1.7.4"],
     env: { NGT_AGENT_PRIVATE_KEY: key, NGT_MAX_PRICE: "0.01", NGT_SESSION_BUDGET: "0.1" },
   });
   for (const app of ["claude", "claude-code", "gemini", "codex"]) {
     assert.equal(serverEntry(app, "win32", limits).command, "cmd", app);
-    assert.deepEqual(serverEntry(app, "win32", limits).args, ["/c", "npx", "-y", "@ngtchain/mcp@1.7.2"], app);
+    assert.deepEqual(serverEntry(app, "win32", limits).args, ["/c", "npx", "-y", "@ngtchain/mcp@1.7.4"], app);
     assert.equal(serverEntry(app, "darwin", limits).command, "npx", app);
   }
   assert.equal(serverEntry("claude-code", "linux", limits).type, "stdio");
@@ -72,7 +72,7 @@ test("Codex config.toml keeps other tables and comments, and replaces ngtchain i
   assert.equal(config.model, "o4");
   assert.deepEqual({ ...config.mcp_servers.other }, { command: "x" });
   assert.equal(config.mcp_servers.ngtchain.command, "npx");
-  assert.deepEqual(config.mcp_servers.ngtchain.args, ["-y", "@ngtchain/mcp@1.7.2"]);
+  assert.deepEqual(config.mcp_servers.ngtchain.args, ["-y", "@ngtchain/mcp@1.7.4"]);
   assert.equal(config.mcp_servers.ngtchain.env.NGT_AGENT_PRIVATE_KEY, key);
   assert.equal(config.mcp_servers.ngtchain.env.NGT_HOST_HEADERS, '{"api.example.com":{"x-api-key":"k"}}');
 

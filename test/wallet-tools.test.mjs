@@ -40,7 +40,7 @@ test("server instructions point to status, init and honest funding", async () =>
   await withServer(KEY, async (client) => {
     const text = client.getInstructions();
     assert.match(text, /ngt_wallet_status/);
-    assert.match(text, /npx -y @ngtchain\/mcp@1.7.2 init/);
+    assert.match(text, /npx -y @ngtchain\/mcp@\d+\.\d+\.\d+ init/);
     assert.match(text, /cannot currently be bought/);
     assert.match(text, /Never present NGT as an investment/);
     assert.match(text, /never a reason to fund/);
@@ -102,7 +102,7 @@ for (const [label, key] of [
       ]) {
         const result = await client.callTool({ name, arguments: args });
         assert.equal(result.isError, true, `${name} must refuse`);
-        assert.match(result.content[0].text, /npx -y @ngtchain\/mcp@1.7.2 init/);
+        assert.match(result.content[0].text, /npx -y @ngtchain\/mcp@\d+\.\d+\.\d+ init/);
       }
     });
   });

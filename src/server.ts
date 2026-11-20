@@ -26,7 +26,7 @@ const USDC_INSTRUCTION = `
 const INSTRUCTIONS = `NGT Chain lets this agent pay for APIs per call in NGT on Base, within spending caps the user set.
 - When the user wants data from a paid URL (HTTP 402 / x402), use pay_and_fetch. The configured caps apply on their own.
 - Call ngt_wallet_status before the first paid call in a conversation, and whenever the user asks about the agent wallet, its balance or its budget.
-- If no wallet is set up, tell the user to run \`npx -y @ngtchain/mcp@1.7.2 init\` in a terminal, then restart this app.
+- If no wallet is set up, tell the user to run \`npx -y @ngtchain/mcp@1.7.4 init\` in a terminal, then restart this app.
 - A 402 is the normal first step of a paid call and pay_and_fetch pays it within the caps. It is never a reason to fund the wallet.
 - If the balance is too low for what the user wants, work out what it costs (price per call times the number of calls), propose that amount, and call fund_agent_wallet only after the user agrees. The user approves the transfer in their own browser wallet.
 - When a paid call fails, follow the next step in the error message and tell the user. Do not retry in a loop.
@@ -78,7 +78,7 @@ function nextStep(message: string, limit?: string, redirectsRefused = false): st
   if (/Unexpected status code/.test(message)) return `Nothing was paid: the API answered with an error before asking for payment. ${DO_NOT_RETRY}`;
   if (/^Refusing/.test(message)) {
     if (!usdc.enabled && USDC_ADDRESSES.some((address) => message.toLowerCase().includes(address))) {
-      return `Nothing was paid: the seller takes USDC but not NGT, and USDC is off. Tell the user; they can turn it on with NGT_USDC_MAX_PRICE and NGT_USDC_SESSION_BUDGET in the MCP config (or by running \`npx -y @ngtchain/mcp@1.7.2 init\` again) and restarting the app. ${DO_NOT_RETRY}`;
+      return `Nothing was paid: the seller takes USDC but not NGT, and USDC is off. Tell the user; they can turn it on with NGT_USDC_MAX_PRICE and NGT_USDC_SESSION_BUDGET in the MCP config (or by running \`npx -y @ngtchain/mcp@1.7.4 init\` again) and restarting the app. ${DO_NOT_RETRY}`;
     }
     const accepted = usdc.enabled ? "NGT or USDC" : "NGT";
     return `Nothing was paid: the seller asked for a payment this server does not make (only ${accepted} on Base within the caps). ${limit ? `${limit} ` : ""}${DO_NOT_RETRY}`;
@@ -89,10 +89,10 @@ function nextStep(message: string, limit?: string, redirectsRefused = false): st
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err)).replace(/\.$/, "");
 
 const NO_WALLET =
-  "No wallet set up yet for your assistant's spending account, so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.2 init` in a terminal to set up the agent wallet (in Claude Desktop, set the agent key in the extension's settings instead), then restart this app.";
+  "No wallet set up yet for your assistant's spending account, so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.4 init` in a terminal to set up the agent wallet (in Claude Desktop, set the agent key in the extension's settings instead), then restart this app.";
 
 const BAD_KEY =
-  "The agent key in the MCP config is not a valid private key (64 hex characters, with or without 0x), so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.2 init` in a terminal to set it again, then restart this app. In Claude Desktop, fix the agent key in the extension's settings instead; pasting into that hidden field can add to the old value rather than replace it, so if in doubt, reinstall the extension and paste the key once.";
+  "The agent key in the MCP config is not a valid private key (64 hex characters, with or without 0x), so nothing was paid. Tell the user to run `npx -y @ngtchain/mcp@1.7.4 init` in a terminal to set it again, then restart this app. In Claude Desktop, fix the agent key in the extension's settings instead; pasting into that hidden field can add to the old value rather than replace it, so if in doubt, reinstall the extension and paste the key once.";
 
 const MAX_DATA_CHARS = 50_000;
 
@@ -108,7 +108,7 @@ function capData(data: unknown): { data: unknown; truncated?: string } {
 }
 
 const PAUSED =
-  "Spending is paused by the user, so nothing was paid. Tell the user; only they can resume it, with `npx -y @ngtchain/mcp@1.7.2 resume` or the dashboard (`npx -y @ngtchain/mcp@1.7.2 dashboard`). Do not retry.";
+  "Spending is paused by the user, so nothing was paid. Tell the user; only they can resume it, with `npx -y @ngtchain/mcp@1.7.4 resume` or the dashboard (`npx -y @ngtchain/mcp@1.7.4 dashboard`). Do not retry.";
 
 function agentKey(): { key: string; address: string } | { error: string } {
   const raw = process.env.NGT_AGENT_PRIVATE_KEY?.trim();

@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const VERSION = "1.7.3";
+const VERSION = "1.7.4";
 
 console.log(`Building NGT Chain MCP v${VERSION}...`);
 

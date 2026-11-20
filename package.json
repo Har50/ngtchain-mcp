@@ -1,6 +1,6 @@
 {
   "name": "@ngtchain/mcp",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "Each call spends real NGT or USDC from a wallet you fund, within per-call caps and a session budget you set.",
   "mcpName": "io.github.Har50/ngtchain",
   "type": "module",
@@ -16,7 +16,7 @@
     "build": "npm run build --prefix client && tsc",
     "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
-    "test": "npm run build && node --test test/destructive-hint.test.mjs test/init.test.mjs test/no-wallet.test.mjs test/fund.test.mjs test/help.test.mjs test/wallet-tools.test.mjs test/host-headers.test.mjs test/activity.test.mjs test/dashboard.test.mjs test/usdc.test.mjs && node test/pay-and-fetch.e2e.mjs"
+    "test": "npm run build && node --test test/destructive-hint.test.mjs test/init.test.mjs test/no-wallet.test.mjs test/fund.test.mjs test/help.test.mjs test/wallet-tools.test.mjs test/host-headers.test.mjs test/activity.test.mjs test/dashboard.test.mjs test/usdc.test.mjs test/version-pins.test.mjs && node test/pay-and-fetch.e2e.mjs"
   },
   "keywords": [
     "mcp",

@@ -4,12 +4,12 @@
 const HELP = `NGT Chain MCP server: lets an AI agent pay x402 APIs in NGT on Base, with spending caps.
 
 Usage:
-  npx -y @ngtchain/mcp@1.7.2 init        Set up the agent wallet in Cursor, Claude Desktop, Claude Code, Gemini CLI or Codex
-  npx -y @ngtchain/mcp@1.7.2 pause       Stop all agent spending, in every app, until you resume
-  npx -y @ngtchain/mcp@1.7.2 resume      Allow agent spending again
-  npx -y @ngtchain/mcp@1.7.2 dashboard   Open a local page with recent paid calls, balances and a pause button
-  npx -y @ngtchain/mcp@1.7.2             Start the MCP server on stdio (your MCP client runs this)
-  npx -y @ngtchain/mcp@1.7.2 --help      Show this help
+  npx -y @ngtchain/mcp@1.7.4 init        Set up the agent wallet in Cursor, Claude Desktop, Claude Code, Gemini CLI or Codex
+  npx -y @ngtchain/mcp@1.7.4 pause       Stop all agent spending, in every app, until you resume
+  npx -y @ngtchain/mcp@1.7.4 resume      Allow agent spending again
+  npx -y @ngtchain/mcp@1.7.4 dashboard   Open a local page with recent paid calls, balances and a pause button
+  npx -y @ngtchain/mcp@1.7.4             Start the MCP server on stdio (your MCP client runs this)
+  npx -y @ngtchain/mcp@1.7.4 --help      Show this help
 
 Server environment:
   NGT_AGENT_PRIVATE_KEY   Agent wallet key that signs NGT payments (required to pay)
@@ -32,7 +32,7 @@ if (command === "init") {
   setPaused(command === "pause");
   console.log(
     command === "pause"
-      ? "Agent spending is paused in every app. Paid tools pay nothing until you run: npx -y @ngtchain/mcp@1.7.2 resume"
+      ? "Agent spending is paused in every app. Paid tools pay nothing until you run: npx -y @ngtchain/mcp@1.7.4 resume"
       : "Agent spending is allowed again, within your caps.",
   );
   console.log(`Activity log: ${activityLogPath()}`);
@@ -44,8 +44,8 @@ if (command === "init") {
 } else {
   // stdout carries the MCP protocol, so terminal hints go to stderr.
   if (process.stdin.isTTY) {
-    console.error("Waiting for an MCP client on stdio. To set up your MCP app, run: npx -y @ngtchain/mcp@1.7.2 init");
-    console.error("For usage, run: npx -y @ngtchain/mcp@1.7.2 --help   (Ctrl+C stops this server)");
+    console.error("Waiting for an MCP client on stdio. To set up your MCP app, run: npx -y @ngtchain/mcp@1.7.4 init");
+    console.error("For usage, run: npx -y @ngtchain/mcp@1.7.4 --help   (Ctrl+C stops this server)");
   }
   await import("./server.js");
 }
